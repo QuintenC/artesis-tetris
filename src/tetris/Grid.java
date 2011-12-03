@@ -383,6 +383,10 @@ public class Grid extends JPanel implements KeyListener {
 
   }
 
+  /**
+   * Methode om een nieuwe, willekeurige block te genereren.
+   * @return Block een willekeurige block
+   */
   protected Block getRandomBlock() {
     // Random blok / klasse
     Class randomBlockClass;
