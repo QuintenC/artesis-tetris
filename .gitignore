@@ -1,4 +1,7 @@
 nbproject/
+nbbuild.xml
+dist/
+
 
 *.swp
 *.swo
