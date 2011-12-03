@@ -2,8 +2,9 @@ package tetris;
 
 import java.awt.*;
 import javax.swing.*;
+import tetris.events.*;
 
-public class Sidebar extends JPanel {
+public class Sidebar extends JPanel implements NewBlockEventListener {
 
   JPanel sidePanel;
   static String block = "Lblock";
@@ -26,8 +27,8 @@ public class Sidebar extends JPanel {
 
     // Generate random block
     JLabel blockLabel = new JLabel();
-    Integer initialBlockNr = (int) Math.ceil(Math.random() * 7);
-    this.generateRandomBlock(initialBlockNr);
+    // Integer initialBlockNr = (int) Math.ceil(Math.random() * 7);
+    // this.generateRandomBlock(initialBlockNr);
     sidePanel.add(blockLabel);
 
     // Start Button
@@ -68,41 +69,21 @@ public class Sidebar extends JPanel {
 
   }
 
+  
   /**
-   * Een willekeurige nieuwe blok genereren
+   * Block label updaten
    */
-  public void generateRandomBlock(Integer blockNr) {
+  public void setBlockImage(Class blockClass) {
     // Icoon voor next block instellen
     ImageIcon icon;
     String imagePath = "C:\\Users\\vdb\\Documents\\NetBeansProjects\\Tetris\\src\\tetris\\";
-    switch (blockNr) {
-      case 1:
-        icon = new ImageIcon(imagePath + "Iblock.png");
-        break;
-      case 2:
-        icon = new ImageIcon(imagePath + "Jblock.png");
-        break;
-      case 3:
-        icon = new ImageIcon(imagePath + "Lblock.png");
-        break;
-      case 4:
-        icon = new ImageIcon(imagePath + "Oblock.png");
-        break;
-      case 5:
-        icon = new ImageIcon(imagePath + "Sblock.png");
-        break;
-      case 6:
-        icon = new ImageIcon(imagePath + "Tblock.png");
-        break;
-      case 7:
-        icon = new ImageIcon(imagePath + "Zblock.png");
-        break;
-      default:
-        // Should not get here
-        return;
-    }
-
+    icon = new ImageIcon(imagePath + blockClass.getName() + ".png");
     blockLabel.setIcon(icon);
   }
 
+
+  public void newBlockEventOccurred(NewBlockEvent e) {
+    Grid sourceGrid = (Grid) e.getSource();
+    this.setBlockImage(sourceGrid.CurrentBlock.getClass());
+  }
 }

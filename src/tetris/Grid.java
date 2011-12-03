@@ -5,6 +5,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import java.util.ArrayList;
 import java.lang.reflect.Constructor;
+import tetris.events.*;
 
 public class Grid extends JPanel implements KeyListener {
 
@@ -23,6 +24,7 @@ public class Grid extends JPanel implements KeyListener {
   private int Direction;
   private boolean collision = false;
   Block CurrentBlock = new Lblock((int) horTiles / 2 * tileSize, (int) 0);
+  Block NextBlock = new Lblock((int) horTiles / 2 * tileSize, (int) 0);
   ArrayList<Block> blokken = new ArrayList<Block>();
 
 //     final public void start(){
@@ -322,7 +324,12 @@ public class Grid extends JPanel implements KeyListener {
     if (collision == true) {
       CheckLines();
       // Random blok / klasse
-      CurrentBlock = this.getRandomBlock();
+      CurrentBlock = NextBlock;
+      NextBlock = this.getRandomBlock();
+      // Dispatch event for new block
+      this.fireNewBlockEvent(new NewBlockEvent(this));
+      
+
 
       // Test voor game over
       if (CurrentBlockIndex != 0) {
@@ -348,7 +355,7 @@ public class Grid extends JPanel implements KeyListener {
 
 
       CurrentBlockIndex++;
-      
+
 //         TetrisUI.tetrisSidebar.sidePanel.removeAll();
       TetrisUI.tetrisSidebar.sidePanel.validate();
       TetrisUI.tetrisSidebar.sidePanel.repaint();
@@ -436,5 +443,23 @@ public class Grid extends JPanel implements KeyListener {
     }
 
 
+  }
+
+  public void addNewBlockEventListener(NewBlockEventListener listener) {
+    listenerList.add(NewBlockEventListener.class, listener);
+  }
+
+  public void newBlockEventOccurred(NewBlockEvent e) {
+  }
+
+  public void fireNewBlockEvent(NewBlockEvent evt) {
+    Object[] listeners = listenerList.getListenerList();
+    int listenerCount = listeners.length;
+
+    for (int i = 0; i < listenerCount; i += 2) {
+      if (listeners[i] == NewBlockEventListener.class) {
+        ((NewBlockEventListener) listeners[i + 1]).newBlockEventOccurred(evt);
+      }
+    }
   }
 }

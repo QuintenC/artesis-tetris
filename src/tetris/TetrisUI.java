@@ -42,6 +42,7 @@ public class TetrisUI {
 
     tetrisGrid = panelCreator.createGrid(gameUI);
     tetrisSidebar = panelCreator.createSidebar(gameUI);
+    tetrisGrid.addNewBlockEventListener(tetrisSidebar);
     tetrisMenu = panelCreator.createMenu(gameUI);
 
     gameUI.addKeyListener(tetrisGrid);
