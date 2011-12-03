@@ -1,0 +1,6 @@
+nbproject/
+
+*.swp
+*.swo
+
+build/
