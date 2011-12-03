@@ -26,7 +26,8 @@ public class Sidebar extends JPanel {
 
     // Generate random block
     JLabel blockLabel = new JLabel();
-    this.generateRandomBlock();
+    Integer initialBlockNr = (int) Math.ceil(Math.random() * 7);
+    this.generateRandomBlock(initialBlockNr);
     sidePanel.add(blockLabel);
 
     // Start Button
@@ -70,11 +71,11 @@ public class Sidebar extends JPanel {
   /**
    * Een willekeurige nieuwe blok genereren
    */
-  public void generateRandomBlock() {
+  public void generateRandomBlock(Integer blockNr) {
     // Icoon voor next block instellen
     ImageIcon icon;
     String imagePath = "C:\\Users\\vdb\\Documents\\NetBeansProjects\\Tetris\\src\\tetris\\";
-    switch (Grid.randomNum) {
+    switch (blockNr) {
       case 1:
         icon = new ImageIcon(imagePath + "Iblock.png");
         break;

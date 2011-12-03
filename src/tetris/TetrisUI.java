@@ -35,8 +35,6 @@ public class TetrisUI {
 //                Sidebar tetrisSidebar;
     Menu tetrisMenu;
 
-
-
     gameUI.setLocation(100, 100);
     gameUI.setSize(446, 603);
     gameUI.setTitle("Java Tetris Game!!!");
