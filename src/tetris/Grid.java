@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import java.util.ArrayList;
+import java.lang.reflect.Constructor;
 
 public class Grid extends JPanel implements KeyListener {
 
@@ -22,7 +23,7 @@ public class Grid extends JPanel implements KeyListener {
   public static int randomNum = (int) (Math.random() * 7);
   private int Direction;
   private boolean collision = false;
-  Lblock CurrentBlock = new Lblock((int) horTiles / 2 * tileSize, (int) 0);
+  Block CurrentBlock = new Lblock((int) horTiles / 2 * tileSize, (int) 0);
   ArrayList<Block> blokken = new ArrayList<Block>();
 
 //     final public void start(){
@@ -321,28 +322,9 @@ public class Grid extends JPanel implements KeyListener {
 
     if (collision == true) {
       CheckLines();
-      if (randomNum == 0) {
-        Iblock CurrentBlock = new Iblock((int) horTiles / 2 * tileSize, (int) 0);
-        blokken.add(CurrentBlock);
-      } else if (randomNum == 1) {
-        Jblock CurrentBlock = new Jblock((int) horTiles / 2 * tileSize, (int) 0);
-        blokken.add(CurrentBlock);
-      } else if (randomNum == 2) {
-        Lblock CurrentBlock = new Lblock((int) horTiles / 2 * tileSize, (int) 0);
-        blokken.add(CurrentBlock);
-      } else if (randomNum == 3) {
-        Oblock CurrentBlock = new Oblock((int) horTiles / 2 * tileSize, (int) 0);
-        blokken.add(CurrentBlock);
-      } else if (randomNum == 4) {
-        Sblock CurrentBlock = new Sblock((int) horTiles / 2 * tileSize, (int) 0);
-        blokken.add(CurrentBlock);
-      } else if (randomNum == 5) {
-        Tblock CurrentBlock = new Tblock((int) horTiles / 2 * tileSize, (int) 0);
-        blokken.add(CurrentBlock);
-      } else if (randomNum == 6) {
-        Zblock CurrentBlock = new Zblock((int) horTiles / 2 * tileSize, (int) 0);
-        blokken.add(CurrentBlock);
-      }
+      // Random blok / klasse
+      CurrentBlock = this.getRandomBlock();
+
       if (CurrentBlockIndex != 0) {
         for (int u = 1; u <= 4; u++) {
           if (blokken.get(CurrentBlockIndex - 1).getY(u) < 30) {
@@ -399,5 +381,56 @@ public class Grid extends JPanel implements KeyListener {
 //             }
 //             RefreshSidebar();
 
+  }
+
+
+  protected Block getRandomBlock() {
+          // Random blok / klasse
+      Class randomBlockClass;
+      switch (randomNum) {
+        case 0:
+          randomBlockClass = Iblock.class;
+          break;
+        case 1:
+          randomBlockClass = Jblock.class;
+          break;
+        case 2:
+          randomBlockClass = Lblock.class;
+          break;
+        case 3:
+          randomBlockClass = Oblock.class;
+          break;
+        case 4:
+          randomBlockClass = Sblock.class;
+          break;
+        case 5:
+          randomBlockClass = Tblock.class;
+          break;
+        case 6:
+          randomBlockClass = Zblock.class;
+          break;
+        default:
+          randomBlockClass = Iblock.class;
+      }
+
+      // Coordinaten van de nieuwe block
+      int blockX = (int) horTiles / 2 * tileSize;
+      int blockY = 0;
+
+      Block newRandomBlock;
+      try {
+        // Instantieer random block
+        Constructor randomBlockConstructor = randomBlockClass.getConstructor(new Class[]{int.class, int.class});
+        newRandomBlock = (Block) randomBlockConstructor.newInstance(new Object[]{blockX, blockY});
+        blokken.add(newRandomBlock);
+        return newRandomBlock;
+      } catch (Exception e) {
+        // Er zijn enkele exceptions die gecatched moeten worden,
+        // maar normaal gezien doen die zich niet voor dus... return
+        System.exit(0);
+        return null;
+      }
+      
+      
   }
 }
