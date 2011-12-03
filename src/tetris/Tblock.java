@@ -16,11 +16,11 @@ public class Tblock implements Block{
     private int rotatenr = 1;
     private Color kleur = Color.MAGENTA;
 
-    Tblock() {
+    public Tblock() {
         //contructor
     }
 
-    Tblock(int x,int y) {
+    public void setPosition(int x,int y) {
         //constructor
         this.setAllXCoord(x, x, x + 30, x - 30);
         this.setAllYCoord(y, y + 30, y + 30, y + 30);

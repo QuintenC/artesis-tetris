@@ -16,11 +16,11 @@ public class Lblock implements Block{
     private int rotatenr = 1;
     private Color kleur = Color.ORANGE;
 
-    Lblock() {
+    public Lblock() {
         //contructor
     }
 
-    Lblock(int x,int y) {
+    public void setPosition(int x,int y) {
         //constructor
         this.setAllXCoord(x, x - 30, x + 30, x -30);
         this.setAllYCoord(y, y, y, y + 30);

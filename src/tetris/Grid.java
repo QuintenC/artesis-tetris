@@ -23,8 +23,8 @@ public class Grid extends JPanel implements KeyListener {
   private int CurrentBlockIndex = 0;
   private int Direction;
   private boolean collision = false;
-  Block CurrentBlock = new Lblock((int) horTiles / 2 * tileSize, (int) 0);
-  Block NextBlock = new Lblock((int) horTiles / 2 * tileSize, (int) 0);
+  Block CurrentBlock; // new Lblock((int) horTiles / 2 * tileSize, (int) 0);
+  Block NextBlock; // new Lblock((int) horTiles / 2 * tileSize, (int) 0);
   ArrayList<Block> blokken = new ArrayList<Block>();
 
 //     final public void start(){
@@ -174,6 +174,8 @@ public class Grid extends JPanel implements KeyListener {
   public Grid() {
     // Constructor
     this.setSize(gridWidth, gridHeight);
+    NextBlock = this.getRandomBlock();
+    CurrentBlock = this.getRandomBlock();
     blokken.add(CurrentBlock);
     UpdateGrid();
 //         start();
@@ -328,7 +330,7 @@ public class Grid extends JPanel implements KeyListener {
       NextBlock = this.getRandomBlock();
       // Dispatch event for new block
       this.fireNewBlockEvent(new NewBlockEvent(this));
-      
+
 
 
       // Test voor game over
@@ -431,13 +433,22 @@ public class Grid extends JPanel implements KeyListener {
     Block newRandomBlock;
     try {
       // Instantieer random block
-      Constructor randomBlockConstructor = randomBlockClass.getConstructor(new Class[]{int.class, int.class});
-      newRandomBlock = (Block) randomBlockConstructor.newInstance(new Object[]{blockX, blockY});
+      System.out.println("Get constructor...");
+      Constructor randomBlockConstructor = randomBlockClass.getConstructor();
+      System.out.println("Constructor created...");
+      newRandomBlock = (Block) randomBlockConstructor.newInstance();
+      System.out.println("newRandomBlock created...");
+      newRandomBlock.setPosition(blockX, blockY);
       blokken.add(newRandomBlock);
       return newRandomBlock;
     } catch (Exception e) {
       // Er zijn enkele exceptions die gecatched moeten worden,
-      // maar normaal gezien doen die zich niet voor dus... return
+      // maar normaal gezien doen die zich niet voor dus... exit
+      // Voor te debuggen:
+      System.out.println("Error: Geen nieuwe random block!!!");
+      System.out.println(e.getLocalizedMessage());
+      System.out.println(e.getMessage());
+      System.out.println(e.toString());
       System.exit(0);
       return null;
     }

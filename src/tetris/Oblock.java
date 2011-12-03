@@ -15,11 +15,11 @@ public class Oblock implements Block{
     private int size = 30;
     private Color kleur = Color.YELLOW;
 
-    Oblock() {
+    public Oblock() {
         //contructor
     }
 
-    Oblock(int x,int y) {
+    public void setPosition(int x,int y) {
         //constructor
         this.setX1(x);
         this.setY1(y);

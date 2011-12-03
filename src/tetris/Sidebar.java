@@ -74,10 +74,15 @@ public class Sidebar extends JPanel implements NewBlockEventListener {
    * Block label updaten
    */
   public void setBlockImage(Class blockClass) {
+    System.out.println("Sidebar.setBlockImage");
     // Icoon voor next block instellen
     ImageIcon icon;
-    String imagePath = "C:\\Users\\vdb\\Documents\\NetBeansProjects\\Tetris\\src\\tetris\\";
-    icon = new ImageIcon(imagePath + blockClass.getName() + ".png");
+    // String imagePath = "C:\\Users\\vdb\\Documents\\NetBeansProjects\\Tetris\\src\\tetris\\";
+    String imagePath = "src\\tetris\\";
+    String path = imagePath + blockClass.getSimpleName() + ".png";
+    System.out.println(path);
+    icon = new ImageIcon(path);
+    System.out.println(icon.getIconHeight());
     blockLabel.setIcon(icon);
   }
 

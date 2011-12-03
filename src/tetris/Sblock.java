@@ -17,11 +17,11 @@ public class Sblock implements Block{
     private int rotatenr = 1;
     private Color kleur = Color.GREEN;
 
-    Sblock() {
+    public Sblock() {
         //contructor
     }
 
-    Sblock(int x,int y) {
+    public void setPosition(int x,int y) {
         //constructor
         this.setAllXCoord(x, x + 30, x, x -30);
         this.setAllYCoord(y, y, y + 30, y + 30);

@@ -16,15 +16,19 @@ public class Iblock implements Block{
     private int rotatenr = 1;
     private Color kleur = Color.CYAN;
 
-    Iblock() {
+    public Iblock() {
         //contructor
     }
 
-    Iblock(int x,int y) {
+    public Iblock(int x,int y) {
         //constructor
-        this.setAllXCoord(x, x - 30, x - 60, x + 30);
-        this.setAllYCoord(y, y, y, y);
+        this.setPosition(x, y);
 
+    }
+
+    public void setPosition(int x, int y) {
+      this.setAllXCoord(x, x - 30, x - 60, x + 30);
+      this.setAllYCoord(y, y, y, y);
     }
 
     public void draw(Graphics g){

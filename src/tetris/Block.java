@@ -11,6 +11,7 @@ import java.awt.*;
  * @author vdb
  */
 public interface Block {
+    void setPosition(int x, int y);
 
     void draw(Graphics g);
 
