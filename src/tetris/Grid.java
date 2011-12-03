@@ -20,7 +20,6 @@ public class Grid extends JPanel implements KeyListener {
   private static final Color tileColor = Color.GRAY;
   private static final Color gridColor = Color.DARK_GRAY;
   private int CurrentBlockIndex = 0;
-  public static int randomNum = (int) (Math.random() * 7);
   private int Direction;
   private boolean collision = false;
   Block CurrentBlock = new Lblock((int) horTiles / 2 * tileSize, (int) 0);
@@ -325,6 +324,7 @@ public class Grid extends JPanel implements KeyListener {
       // Random blok / klasse
       CurrentBlock = this.getRandomBlock();
 
+      // Test voor game over
       if (CurrentBlockIndex != 0) {
         for (int u = 1; u <= 4; u++) {
           if (blokken.get(CurrentBlockIndex - 1).getY(u) < 30) {
@@ -341,14 +341,14 @@ public class Grid extends JPanel implements KeyListener {
             }
           }
         }
-
-
       }
       if (gameover == true) {
       }
       collision = false;
+
+
       CurrentBlockIndex++;
-      randomNum = (int) (Math.random() * 7);
+      
 //         TetrisUI.tetrisSidebar.sidePanel.removeAll();
       TetrisUI.tetrisSidebar.sidePanel.validate();
       TetrisUI.tetrisSidebar.sidePanel.repaint();
@@ -383,54 +383,54 @@ public class Grid extends JPanel implements KeyListener {
 
   }
 
-
   protected Block getRandomBlock() {
-          // Random blok / klasse
-      Class randomBlockClass;
-      switch (randomNum) {
-        case 0:
-          randomBlockClass = Iblock.class;
-          break;
-        case 1:
-          randomBlockClass = Jblock.class;
-          break;
-        case 2:
-          randomBlockClass = Lblock.class;
-          break;
-        case 3:
-          randomBlockClass = Oblock.class;
-          break;
-        case 4:
-          randomBlockClass = Sblock.class;
-          break;
-        case 5:
-          randomBlockClass = Tblock.class;
-          break;
-        case 6:
-          randomBlockClass = Zblock.class;
-          break;
-        default:
-          randomBlockClass = Iblock.class;
-      }
+    // Random blok / klasse
+    Class randomBlockClass;
+    int randomNum = (int) (Math.random() * 7);
+    switch (randomNum) {
+      case 0:
+        randomBlockClass = Iblock.class;
+        break;
+      case 1:
+        randomBlockClass = Jblock.class;
+        break;
+      case 2:
+        randomBlockClass = Lblock.class;
+        break;
+      case 3:
+        randomBlockClass = Oblock.class;
+        break;
+      case 4:
+        randomBlockClass = Sblock.class;
+        break;
+      case 5:
+        randomBlockClass = Tblock.class;
+        break;
+      case 6:
+        randomBlockClass = Zblock.class;
+        break;
+      default:
+        randomBlockClass = Iblock.class;
+    }
 
-      // Coordinaten van de nieuwe block
-      int blockX = (int) horTiles / 2 * tileSize;
-      int blockY = 0;
+    // Coordinaten van de nieuwe block
+    int blockX = (int) horTiles / 2 * tileSize;
+    int blockY = 0;
 
-      Block newRandomBlock;
-      try {
-        // Instantieer random block
-        Constructor randomBlockConstructor = randomBlockClass.getConstructor(new Class[]{int.class, int.class});
-        newRandomBlock = (Block) randomBlockConstructor.newInstance(new Object[]{blockX, blockY});
-        blokken.add(newRandomBlock);
-        return newRandomBlock;
-      } catch (Exception e) {
-        // Er zijn enkele exceptions die gecatched moeten worden,
-        // maar normaal gezien doen die zich niet voor dus... return
-        System.exit(0);
-        return null;
-      }
-      
-      
+    Block newRandomBlock;
+    try {
+      // Instantieer random block
+      Constructor randomBlockConstructor = randomBlockClass.getConstructor(new Class[]{int.class, int.class});
+      newRandomBlock = (Block) randomBlockConstructor.newInstance(new Object[]{blockX, blockY});
+      blokken.add(newRandomBlock);
+      return newRandomBlock;
+    } catch (Exception e) {
+      // Er zijn enkele exceptions die gecatched moeten worden,
+      // maar normaal gezien doen die zich niet voor dus... return
+      System.exit(0);
+      return null;
+    }
+
+
   }
 }
