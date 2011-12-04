@@ -6,8 +6,10 @@ import tetris.events.*;
 
 public class Sidebar extends JPanel implements NewBlockEventListener, NewScoreEventListener {
 
-  JPanel sidePanel;
+  protected JPanel sidePanel;
   protected JLabel blockLabel;
+  protected JLabel Score;
+  protected JLabel Lines;
   protected int lines;
   protected int score;
 
@@ -47,11 +49,11 @@ public class Sidebar extends JPanel implements NewBlockEventListener, NewScoreEv
     sidePanel.add(stopButton);
 
     // Score
-    JLabel Score = new JLabel("Score: " + score);
+    Score = new JLabel("Score: " + score);
     Score.setFont(new Font("sansserif", Font.BOLD, 18));
     sidePanel.add(Score);
 
-    JLabel Lines = new JLabel("Lines: " + lines);
+    Lines = new JLabel("Lines: " + lines);
     Lines.setFont(new Font("sansserif", Font.BOLD, 18));
     sidePanel.add(Lines);
 
@@ -61,12 +63,14 @@ public class Sidebar extends JPanel implements NewBlockEventListener, NewScoreEv
     sidePanel.add(highscores);
   }
 
-  public void setLines(int line) {
-    lines = line;
+  public void setLines(int input) {
+    lines = input;
+    Lines.setText("Lines: " + lines);
   }
 
-  public void setScore(int Score) {
-    score = Score;
+  public void setScore(int input) {
+    score = input;
+    Score.setText("Score: " + score);
   }
 
   /**
