@@ -4,7 +4,7 @@ import java.awt.*;
 import javax.swing.*;
 import tetris.events.*;
 
-public class Sidebar extends JPanel implements NewBlockEventListener,NewScoreEventListener {
+public class Sidebar extends JPanel implements NewBlockEventListener, NewScoreEventListener {
 
   JPanel sidePanel;
   protected JLabel blockLabel;
@@ -66,9 +66,9 @@ public class Sidebar extends JPanel implements NewBlockEventListener,NewScoreEve
   }
 
   public void setScore(int Score) {
-      score = Score;
+    score = Score;
   }
-  
+
   /**
    * Block label updaten
    */
@@ -83,25 +83,24 @@ public class Sidebar extends JPanel implements NewBlockEventListener,NewScoreEve
     icon = new ImageIcon(path);
     System.out.println(icon.getIconHeight());
     try {
-        blockLabel.setIcon(icon);
+      blockLabel.setIcon(icon);
     } catch (Exception e) {
-        System.out.println(e.toString());
-        System.out.println(blockLabel);
+      System.out.println(e.toString());
+      System.out.println(blockLabel);
     }
   }
 
-
-    @Override
+  @Override
   public void newBlockEventOccurred(NewBlockEvent e) {
     Grid sourceGrid = (Grid) e.getSource();
     this.setBlockImage(sourceGrid.getNextBlockClass());
   }
 
-    @Override
-    public void newScoreEventOccurred(NewScoreEvent e) {
-        Grid sourceGrid = (Grid) e.getSource();
-        this.setScore(sourceGrid.getScore());
-        System.out.println("score binnen gekregen is : " + sourceGrid.getScore());
-        this.setLines(sourceGrid.getLines());
-    }
+  @Override
+  public void newScoreEventOccurred(NewScoreEvent e) {
+    Grid sourceGrid = (Grid) e.getSource();
+    this.setScore(sourceGrid.getScore());
+    System.out.println("score binnen gekregen is : " + sourceGrid.getScore());
+    this.setLines(sourceGrid.getLines());
+  }
 }
