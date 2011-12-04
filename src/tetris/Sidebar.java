@@ -4,17 +4,14 @@ import java.awt.*;
 import javax.swing.*;
 import tetris.events.*;
 
-public class Sidebar extends JPanel implements NewBlockEventListener {
+public class Sidebar extends JPanel implements NewBlockEventListener,NewScoreEventListener {
 
   JPanel sidePanel;
-  static String block = "Lblock";
-  static int lines;
-  static int score;
-
   protected JLabel blockLabel;
+  protected int lines;
+  protected int score;
 
   public Sidebar() {
-    System.out.println("new panel created, new block is " + block);
     sidePanel = new JPanel();
     sidePanel.setBackground(Color.gray);
     sidePanel.setPreferredSize(new Dimension(130, 603));
@@ -26,7 +23,7 @@ public class Sidebar extends JPanel implements NewBlockEventListener {
     sidePanel.add(NextBlock);
 
     // Generate random block
-    JLabel blockLabel = new JLabel();
+    blockLabel = new JLabel();
     // Integer initialBlockNr = (int) Math.ceil(Math.random() * 7);
     // this.generateRandomBlock(initialBlockNr);
     sidePanel.add(blockLabel);
@@ -66,9 +63,11 @@ public class Sidebar extends JPanel implements NewBlockEventListener {
 
   public void setLines(int line) {
     lines = line;
-
   }
 
+  public void setScore(int Score) {
+      score = Score;
+  }
   
   /**
    * Block label updaten
@@ -77,18 +76,32 @@ public class Sidebar extends JPanel implements NewBlockEventListener {
     System.out.println("Sidebar.setBlockImage");
     // Icoon voor next block instellen
     ImageIcon icon;
-    // String imagePath = "C:\\Users\\vdb\\Documents\\NetBeansProjects\\Tetris\\src\\tetris\\";
-    String imagePath = "src\\tetris\\";
+    String imagePath = "C:\\Users\\vdb\\Documents\\NetBeansProjects\\Tetris\\src\\tetris\\";
+    //String imagePath = "src\\tetris\\";
     String path = imagePath + blockClass.getSimpleName() + ".png";
     System.out.println(path);
     icon = new ImageIcon(path);
     System.out.println(icon.getIconHeight());
-    blockLabel.setIcon(icon);
+    try {
+        blockLabel.setIcon(icon);
+    } catch (Exception e) {
+        System.out.println(e.toString());
+        System.out.println(blockLabel);
+    }
   }
 
 
+    @Override
   public void newBlockEventOccurred(NewBlockEvent e) {
     Grid sourceGrid = (Grid) e.getSource();
-    this.setBlockImage(sourceGrid.CurrentBlock.getClass());
+    this.setBlockImage(sourceGrid.getNextBlockClass());
   }
+
+    @Override
+    public void newScoreEventOccurred(NewScoreEvent e) {
+        Grid sourceGrid = (Grid) e.getSource();
+        this.setScore(sourceGrid.getScore());
+        System.out.println("score binnen gekregen is : " + sourceGrid.getScore());
+        this.setLines(sourceGrid.getLines());
+    }
 }
