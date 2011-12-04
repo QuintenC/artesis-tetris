@@ -76,7 +76,7 @@ public class Sidebar extends JPanel implements NewBlockEventListener, NewScoreEv
     System.out.println("Sidebar.setBlockImage");
     // Icoon voor next block instellen
     ImageIcon icon;
-    String imagePath = "C:\\Users\\vdb\\Documents\\NetBeansProjects\\Tetris\\src\\tetris\\images";
+    String imagePath = "C:\\Users\\vdb\\Documents\\NetBeansProjects\\Tetris\\src\\tetris\\images\\";
     // String imagePath = "src\\tetris\\images";
     String path = imagePath + blockClass.getSimpleName() + ".png";
     System.out.println(path);
