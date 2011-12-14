@@ -3,6 +3,8 @@ package tetris;
 import java.awt.*;
 import javax.swing.*;
 import tetris.events.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class Sidebar extends JPanel implements NewBlockEventListener, NewScoreEventListener {
 
@@ -10,8 +12,11 @@ public class Sidebar extends JPanel implements NewBlockEventListener, NewScoreEv
   protected JLabel blockLabel;
   protected JLabel Score;
   protected JLabel Lines;
+  protected JLabel Level;
   protected int lines;
   protected int score;
+  protected int level;
+  protected boolean gamestarted;
 
   public Sidebar() {
     sidePanel = new JPanel();
@@ -28,25 +33,31 @@ public class Sidebar extends JPanel implements NewBlockEventListener, NewScoreEv
     blockLabel = new JLabel();
     // Integer initialBlockNr = (int) Math.ceil(Math.random() * 7);
     // this.generateRandomBlock(initialBlockNr);
+    ImageIcon icon = new ImageIcon("C:\\Users\\vdb\\Documents\\NetBeansProjects\\Tetris\\src\\tetris\\images\\Noblock.png");
+    blockLabel.setIcon(icon);
     sidePanel.add(blockLabel);
 
     // Start Button
-    JButton startButton = new JButton("Start game");
+    final JButton startButton = new JButton("Start Game");
     startButton.setFont(new Font("sansserif", Font.BOLD, 15));
     startButton.setFocusable(false);
     sidePanel.add(startButton);
 
     // Pause Button
-    JButton pauseButton = new JButton("Pause game");
+    final JButton pauseButton = new JButton("Pause Game");
     pauseButton.setFont(new Font("sansserif", Font.BOLD, 15));
     pauseButton.setFocusable(false);
     sidePanel.add(pauseButton);
 
-    // Stop
-    JButton stopButton = new JButton("Stop game");
-    stopButton.setFont(new Font("sansserif", Font.BOLD, 15));
-    stopButton.setFocusable(false);
-    sidePanel.add(stopButton);
+    JButton highscores = new JButton("Highscores");
+    highscores.setFont(new Font("sansserif", Font.BOLD, 15));
+    highscores.setFocusable(false);
+    sidePanel.add(highscores);
+
+    // Level
+    Level = new JLabel("Level: " + level);
+    Level.setFont(new Font("sansserif", Font.BOLD, 18));
+    sidePanel.add(Level);
 
     // Score
     Score = new JLabel("Score: " + score);
@@ -57,10 +68,74 @@ public class Sidebar extends JPanel implements NewBlockEventListener, NewScoreEv
     Lines.setFont(new Font("sansserif", Font.BOLD, 18));
     sidePanel.add(Lines);
 
-    JButton highscores = new JButton("Highscores");
-    highscores.setFont(new Font("sansserif", Font.BOLD, 15));
-    highscores.setFocusable(false);
-    sidePanel.add(highscores);
+
+
+
+    startButton.addActionListener(
+            new ActionListener() {
+
+              @Override
+              public void actionPerformed(ActionEvent e) {
+                String text = (String) e.getActionCommand();
+                if (text.equals("Start Game")) {
+                  startButton.setText("Stop Game");
+                  gamestarted = true;
+                } else {
+                  startButton.setText("Start Game");
+                  if(pauseButton.getText().equals("Resume Game")){
+                    pauseButton.setText("Pause Game");
+                  }
+                  gamestarted = false;
+                }
+                this.fireNewStartgameEvent(new NewStartgameEvent(this));
+              }
+
+              private void fireNewStartgameEvent(NewStartgameEvent evt) {
+                Object[] listeners = listenerList.getListenerList();
+                int listenerCount = listeners.length;
+
+                for (int i = 0; i < listenerCount; i += 2) {
+                  if (listeners[i] == NewStartgameEventListener.class) {
+                    ((NewStartgameEventListener) listeners[i + 1]).newStartgameEventOccurred(evt);
+                  }
+                }
+              }
+            });
+
+    pauseButton.addActionListener(
+            new ActionListener() {
+
+              @Override
+              public void actionPerformed(ActionEvent e) {
+                this.fireNewPausegameEvent(new NewPausegameEvent(this));
+                 
+                String text = (String) e.getActionCommand();
+                if (gamestarted == true) {
+                  if (text.equals("Pause Game")) {
+                    pauseButton.setText("Resume Game");
+                  } else {
+                    pauseButton.setText("Pause Game");
+                  }
+                }
+              }
+
+              private void fireNewPausegameEvent(NewPausegameEvent evt) {
+                Object[] listeners = listenerList.getListenerList();
+                int listenerCount = listeners.length;
+
+                for (int i = 0; i < listenerCount; i += 2) {
+                  if (listeners[i] == NewPausegameEventListener.class) {
+                    ((NewPausegameEventListener) listeners[i + 1]).newPausegameEventOccurred(evt);
+                  }
+                }
+              }
+            });
+
+  }
+
+  public void setLevel(int input) {
+    level = input;
+    Level.setText("Level: " + level);
   }
 
   public void setLines(int input) {
@@ -80,7 +155,7 @@ public class Sidebar extends JPanel implements NewBlockEventListener, NewScoreEv
     System.out.println("Sidebar.setBlockImage");
     // Icoon voor next block instellen
     ImageIcon icon;
-    String imagePath = "C:\\Users\\vdb\\Documents\\NetBeansProjects\\Tetris\\src\\tetris\\images\\";
+    String imagePath = "src\\tetris\\images\\";
     // String imagePath = "src\\tetris\\images";
     String path = imagePath + blockClass.getSimpleName() + ".png";
     System.out.println(path);
@@ -106,5 +181,14 @@ public class Sidebar extends JPanel implements NewBlockEventListener, NewScoreEv
     this.setScore(sourceGrid.getScore());
     System.out.println("score binnen gekregen is : " + sourceGrid.getScore());
     this.setLines(sourceGrid.getLines());
+    this.setLevel(sourceGrid.getLevel());
+  }
+
+  public void addNewStartgameEventListener(NewStartgameEventListener listener) {
+    listenerList.add(NewStartgameEventListener.class, listener);
+  }
+
+  public void addNewPausegameEventListener(NewPausegameEventListener listener) {
+    listenerList.add(NewPausegameEventListener.class, listener);
   }
 }

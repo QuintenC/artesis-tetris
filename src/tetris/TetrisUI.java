@@ -8,7 +8,6 @@ import javax.swing.JOptionPane.*;
 import java.awt.event.KeyEvent.*;
 import java.awt.Frame.*;
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.*;
 
 /**
@@ -17,9 +16,10 @@ import java.awt.event.*;
  */
 public class TetrisUI {
 
-  public static JFrame gameUI;
-  public static Sidebar tetrisSidebar;
-  public static PanelCreator panelCreator;
+  private JFrame gameUI;
+  private Sidebar tetrisSidebar;
+  private PanelCreator panelCreator;
+  private Menu tetrisMenu;
 
   public void GUI() {
     gameUI = new JFrame("Java Tetris Game!");
@@ -33,23 +33,25 @@ public class TetrisUI {
     panelCreator = new PanelCreator();
     Grid tetrisGrid;
 //                Sidebar tetrisSidebar;
-    Menu tetrisMenu;
 
     gameUI.setLocation(100, 100);
     gameUI.setSize(446, 603);
     gameUI.setTitle("Java Tetris Game!!!");
-    gameUI.setVisible(true);
 
-    tetrisGrid = panelCreator.createGrid(gameUI);
-    tetrisSidebar = panelCreator.createSidebar(gameUI);
-    tetrisGrid.addNewBlockEventListener(tetrisSidebar);
-    tetrisGrid.addNewScoreEventListener(tetrisSidebar);
     tetrisMenu = panelCreator.createMenu(gameUI);
+    tetrisSidebar = panelCreator.createSidebar(gameUI);
+    tetrisGrid = panelCreator.createGrid(gameUI);
+    tetrisGrid.addNewBlockEventListener(tetrisSidebar);
+    
+    tetrisSidebar.addNewStartgameEventListener(tetrisGrid);
+    tetrisSidebar.addNewPausegameEventListener(tetrisGrid);
+    
+    tetrisGrid.addNewScoreEventListener(tetrisSidebar);
+    
 
     gameUI.addKeyListener(tetrisGrid);
 
-
-//                gameUI.pack();
+    gameUI.setVisible(true);
   }
 
   public static void main(String[] args) {
@@ -58,7 +60,7 @@ public class TetrisUI {
   }
 
   public void start() {
-    System.out.println("hallo");
+    System.out.println("hallo van Main");
     TetrisUI.this.GUI();
   }
 }

@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package tetris;
 
 import javax.swing.*;
@@ -14,135 +13,99 @@ import java.awt.event.ActionListener;
  *
  * @author vdb
  */
-public class Menu extends JFrame{
-    JMenuBar bar;
+public class Menu extends JFrame {
 
-    public Menu(){
-		JMenu file = new JMenu("File");
-		file.setMnemonic('F');
+  JMenuBar bar;
 
-                        JMenuItem AboutTetris = new JMenuItem("About Tetris v1");
-                        AboutTetris.setMnemonic('A');
-                        file.add(AboutTetris);
+  public Menu() {
+    JMenu file = new JMenu("File");
+    file.setMnemonic('F');
 
-                        file.addSeparator();
-                        JMenuItem minItem = new JMenuItem("Minimize");
-                        minItem.setMnemonic('M');
-                        file.add(minItem);
+    JMenuItem AboutTetris = new JMenuItem("About Tetris v1");
+    AboutTetris.setMnemonic('A');
+    file.add(AboutTetris);
+
+    file.addSeparator();
+    JMenuItem minItem = new JMenuItem("Minimize");
+    minItem.setMnemonic('M');
+    file.add(minItem);
 
 //                        JMenuItem maxItem = new JMenuItem("Maximize");
 //                        maxItem.setMnemonic('X');
 //                        file.add(maxItem);
 
-                        file.addSeparator();
+    file.addSeparator();
 
-                        JMenuItem quitItem = new JMenuItem("Quit Tetris");
-                        quitItem.setMnemonic('Q');
-                        file.add(quitItem);
+    JMenuItem quitItem = new JMenuItem("Quit Tetris");
+    quitItem.setMnemonic('Q');
+    file.add(quitItem);
 
-                JMenu game = new JMenu("Game");
-		game.setMnemonic('G');
+    JMenu game = new JMenu("Game");
+    game.setMnemonic('G');
 
-                        JMenuItem newgame = new JMenuItem("New game");
-                        newgame.setMnemonic('N');
-                        game.add(newgame);
+    JMenuItem highscores = new JMenuItem("Highscores");
+    highscores.setMnemonic('I');
+    game.add(highscores);
 
-                        JMenuItem pausegame = new JMenuItem("Pause game");
-                        pausegame.setMnemonic('P');
-                        game.add(pausegame);
+    JMenuItem help = new JMenuItem("Help");
+    help.setMnemonic('H');
+    game.add(help);
 
-                        JMenuItem stopgame = new JMenuItem("Stop game");
-                        stopgame.setMnemonic('S');
-                        game.add(stopgame);
+    minItem.addActionListener(
+            new ActionListener() {
 
-                        game.addSeparator();
+              public void actionPerformed(ActionEvent e) {
+                System.out.println("Minimize is pressed");
+              }
+            });
 
-                        JMenuItem highscores = new JMenuItem("Highscores");
-                        highscores.setMnemonic('I');
-                        game.add(highscores);
+    highscores.addActionListener(
+            new ActionListener() {
 
-                        JMenuItem help = new JMenuItem("Help");
-                        help.setMnemonic('H');
-                        game.add(help);
+              public void actionPerformed(ActionEvent e) {
+                System.out.println("Highscore is pressed");
+              }
+            });
+    quitItem.addActionListener(
+            new ActionListener() {
 
-		minItem.addActionListener(
-			new ActionListener(){
-				public void actionPerformed(ActionEvent e)
-				{
-					System.out.println("Minimize is pressed");
-				}
-			}
-		);
-//		maxItem.addActionListener(
-//			new ActionListener(){
-//				public void actionPerformed(ActionEvent e)
-//				{
-//					System.out.println("Maximize is pressed");
-//				}
-//			}
-//		);
-                highscores.addActionListener(
-			new ActionListener(){
-				public void actionPerformed(ActionEvent e)
-				{
-					System.out.println("Highscore is pressed");
-				}
-			}
-		);
-		quitItem.addActionListener(
-			new ActionListener(){
-				public void actionPerformed(ActionEvent e)
-				{
-					System.out.println("Quit is pressed");
-                                        System.exit(0);
-				}
-			}
-		);
-                newgame.addActionListener(
-			new ActionListener(){
-				public void actionPerformed(ActionEvent e)
-				{
-					System.out.println("New is pressed");
-				}
-			}
-		);
-                pausegame.addActionListener(
-			new ActionListener(){
-				public void actionPerformed(ActionEvent e)
-				{
-					System.out.println("Pause is pressed");
-				}
-			}
-		);
-                stopgame.addActionListener(
-			new ActionListener(){
-				public void actionPerformed(ActionEvent e)
-				{
-					System.out.println("Stop is pressed");
-				}
-			}
-		);
-                help.addActionListener(
-			new ActionListener(){
-				public void actionPerformed(ActionEvent e)
-				{
-					System.out.println("Help is pressed");
-				}
-			}
-		);
-                AboutTetris.addActionListener(
-			new ActionListener(){
-				public void actionPerformed(ActionEvent e)
-				{
-					System.out.println("About is pressed");
-				}
-			}
-		);
+              public void actionPerformed(ActionEvent e) {
+                System.out.println("Quit is pressed");
+                System.exit(0);
+              }
+            });
 
-		bar = new JMenuBar();
-		setJMenuBar(bar);
-		bar.add(file);
-                bar.add(game);
+    help.addActionListener(
+            new ActionListener() {
 
-    }
+              public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(null, "Tetris\n\nControls:"
+                        + "\n  Up Arrow: Rotates the block."
+                        + "\n  Down Arrow: Drops the block."
+                        + "\n  Left and Right arrows: Moves the block left and right."
+                        + "\n\nGoal:"
+                        + "\n  The goal of the game is to fill horizontal lines with the random blocks that fall down. "
+                        + "\n  For every block you put down you will recieve 5 points, "
+                        + "\n  if you drop a block you will 2 recieve points for each step it's dropped and "
+                        + "\n  for each horizontal line you fill you will recieve 50 points."
+                        + "\n\n  With every 200 points you score the level will be increased and the blocks will fall faster",
+                        "Help", JOptionPane.INFORMATION_MESSAGE);
+              }
+            });
+    AboutTetris.addActionListener(
+            new ActionListener() {
+
+              public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(null, "Written by Quinten Claes\n\nArtesis Hogeschool Antwerpen"
+                        + "\n2IWEA groep 1 \n\nLab Softwareontwikkeling\nOpdracht : Java-toepassing\n\nLast update : Tuesday 12th december, 2011\n                          18:00 PM",
+                        "About Tetris v1", JOptionPane.INFORMATION_MESSAGE);
+              }
+            });
+
+    bar = new JMenuBar();
+    setJMenuBar(bar);
+    bar.add(file);
+    bar.add(game);
+
+  }
 }
