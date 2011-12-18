@@ -5,9 +5,10 @@
 package tetris;
 
 import javax.swing.*;
-import javax.swing.JFrame;
+import tetris.events.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 /**
  *
@@ -62,13 +63,26 @@ public class Menu extends JFrame {
     highscores.addActionListener(
             new ActionListener() {
 
+              @Override
               public void actionPerformed(ActionEvent e) {
-                System.out.println("Highscore is pressed");
+//                this.fireNewHighscoreEvent(new NewHighscoreEvent(this));
               }
+
+//              private void fireNewHighscoreEvent(NewHighscoreEvent evt) {
+//                Object[] listeners = listenerList.getListenerList();
+//                int listenerCount = listeners.length;
+//
+//                for (int i = 0; i < listenerCount; i += 2) {
+//                  if (listeners[i] == NewHighscoreEventListener.class) {
+//                    ((NewHighscoreEventListener) listeners[i + 1]).newHighscoreEventOccurred(evt);
+//                  }
+//                }
+//              }
             });
     quitItem.addActionListener(
             new ActionListener() {
 
+      @Override
               public void actionPerformed(ActionEvent e) {
                 System.out.println("Quit is pressed");
                 System.exit(0);
@@ -78,6 +92,7 @@ public class Menu extends JFrame {
     help.addActionListener(
             new ActionListener() {
 
+      @Override
               public void actionPerformed(ActionEvent e) {
                 JOptionPane.showMessageDialog(null, "Tetris\n\nControls:"
                         + "\n  Up Arrow: Rotates the block."
@@ -95,6 +110,7 @@ public class Menu extends JFrame {
     AboutTetris.addActionListener(
             new ActionListener() {
 
+      @Override
               public void actionPerformed(ActionEvent e) {
                 JOptionPane.showMessageDialog(null, "Written by Quinten Claes\n\nArtesis Hogeschool Antwerpen"
                         + "\n2IWEA groep 1 \n\nLab Softwareontwikkeling\nOpdracht : Java-toepassing\n\nLast update : Tuesday 12th december, 2011\n                          18:00 PM",
@@ -108,4 +124,8 @@ public class Menu extends JFrame {
     bar.add(game);
 
   }
+
+//  public void addNewHighscoreEventListener(NewHighscoreEventListener listener) {
+//    listenerList.add(NewHighscoreEventListener.class, listener);
+//  }
 }

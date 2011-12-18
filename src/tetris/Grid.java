@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.lang.reflect.Constructor;
 import tetris.events.*;
 
-public class Grid extends JPanel implements KeyListener, Runnable, NewStartgameEventListener, NewPausegameEventListener {
+public class Grid extends JPanel implements KeyListener, Runnable, NewStartgameEventListener, NewPausegameEventListener, NewHighscoreEventListener {
 
   // De breedte en hoogte van de tegels (vierkant)
   private final int tileSize = 30;
@@ -29,12 +29,13 @@ public class Grid extends JPanel implements KeyListener, Runnable, NewStartgameE
   private BlockInterface NextBlock;
   private ArrayList<BlockInterface> blokken = new ArrayList<BlockInterface>();
   private int score;
-  private int levelScore;
+  private int ScoreForNextLevel;
   private int lines;
   private int level = 1;
   private int speed;
   private boolean startgame = false;
   private boolean pleaseWait = false;
+  private boolean gameover = false;
   private Thread th;
   private Highscores highscore = new Highscores();
 
@@ -43,23 +44,6 @@ public class Grid extends JPanel implements KeyListener, Runnable, NewStartgameE
     // Constructor
     this.setSize(gridWidth, gridHeight);
     pleaseWait = true;
-    highscore.MakeFile("naam0",2,1,1);
-    highscore.AddHighscore("naam1", 2, 1, 1);
-    highscore.AddHighscore("naam2", 3, 1, 1);
-    highscore.AddHighscore("naam3", 4, 1, 1);
-    highscore.AddHighscore("naam4", 5, 1, 1);
-    highscore.AddHighscore("naam5", 6, 1, 1);
-    highscore.AddHighscore("naam6", 7, 1, 1);
-    highscore.AddHighscore("naam7", 8, 1, 1);
-    highscore.AddHighscore("naam8", 9, 1, 1);
-    highscore.AddHighscore("naam9", 10, 1, 1);
-    highscore.AddHighscore("naam10", 11, 1, 1);
-    highscore.AddHighscore("naam11", 12, 1, 1);
-    highscore.AddHighscore("naam12", 13, 1, 1);
-
-
-
-    highscore.SaveFile();
     start();
   }
 
@@ -85,6 +69,7 @@ public class Grid extends JPanel implements KeyListener, Runnable, NewStartgameE
           try {
             wait();
           } catch (Exception e) {
+            System.out.println("Wait() failed!");
           }
         }
       }
@@ -128,23 +113,32 @@ public class Grid extends JPanel implements KeyListener, Runnable, NewStartgameE
     return startgame;
   }
 
+  final public boolean getGameover() {
+    return gameover;
+  }
+
   @Override
   public void keyPressed(KeyEvent e) {
     int key = e.getKeyCode();
-    if (key == KeyEvent.VK_RIGHT) {
-      moveRight();
-    } else if (key == KeyEvent.VK_LEFT) {
-      moveLeft();
-    } else if (key == KeyEvent.VK_UP) {
-      rotate();
-    } else if (key == KeyEvent.VK_DOWN) {
-      while (collision == false) {
+    if (pleaseWait == false) {
+      if (key == KeyEvent.VK_RIGHT) {
+        moveRight();
+      } else if (key == KeyEvent.VK_LEFT) {
+        moveLeft();
+      } else if (key == KeyEvent.VK_UP) {
+        rotate();
+      } else if (key == KeyEvent.VK_DOWN) {
         moveDown();
         score += 2;
         this.fireNewScoreEvent(new NewScoreEvent(this));
+      } else if (key == KeyEvent.VK_SPACE) {
+        while (collision == false) {
+          moveDown();
+          score += 2;
+          this.fireNewScoreEvent(new NewScoreEvent(this));
+        }
       }
     }
-
     UpdateGrid();
     this.repaint();
   }
@@ -204,7 +198,6 @@ public class Grid extends JPanel implements KeyListener, Runnable, NewStartgameE
         for (int u = 1; u <= 4; u++) {
           for (int o = 1; o <= 4; o++) {
             if (CurrentBlock.getX(u) + tileSize == blokken.get(i).getX(o) && CurrentBlock.getY(u) == blokken.get(i).getY(o)) {
-//                                System.out.println("check------------------------------------------------------------------------");
               clear = false;
             }
           }
@@ -212,7 +205,6 @@ public class Grid extends JPanel implements KeyListener, Runnable, NewStartgameE
       }
     }
     if (clear == true) {
-//                System.out.println("rechts------------------------------------------------------------------------");
       CurrentBlock.moveRight();
     }
     clear = true;
@@ -225,7 +217,6 @@ public class Grid extends JPanel implements KeyListener, Runnable, NewStartgameE
         for (int u = 1; u <= 4; u++) {
           for (int o = 1; o <= 4; o++) {
             if (CurrentBlock.getX(u) - tileSize == blokken.get(i).getX(o) && CurrentBlock.getY(u) == blokken.get(i).getY(o)) {
-//                                System.out.println("check------------------------------------------------------------------------");
               clear = false;
             }
           }
@@ -233,7 +224,6 @@ public class Grid extends JPanel implements KeyListener, Runnable, NewStartgameE
       }
     }
     if (clear == true) {
-//                System.out.println("links------------------------------------------------------------------------");
       CurrentBlock.moveLeft();
     }
     clear = true;
@@ -247,7 +237,7 @@ public class Grid extends JPanel implements KeyListener, Runnable, NewStartgameE
           for (int o = 1; o <= 4; o++) {
             if (CurrentBlock.getX(u) == blokken.get(i).getX(o) && CurrentBlock.getY(u) + tileSize == blokken.get(i).getY(o)
                     || CurrentBlock.getY(u) == 510) {
-              System.out.println("check, botsing naar onder----------------------------------------------");
+              System.out.println("check, botsing naar onder----------------------------------------------" + "arraylist grootte = " + blokken.size());
               clear = false;
               collision = true;
             }
@@ -442,6 +432,7 @@ public class Grid extends JPanel implements KeyListener, Runnable, NewStartgameE
   private void CheckLines() {
     for (int t = 0; t <= 510; t += 30) {
       int BlocksOnLine = 0;
+      int MultiLines = 0;
 
       for (int i = 0; i < blokken.size(); i++) {
         for (int u = 1; u <= 4; u++) {
@@ -463,9 +454,10 @@ public class Grid extends JPanel implements KeyListener, Runnable, NewStartgameE
           }
         }
         lines++;
+        MultiLines++;
         score += 50;
+        score += 10 * MultiLines;
         System.out.println("line made");
-        this.fireNewScoreEvent(new NewScoreEvent(this));
       }
     }
   }
@@ -475,17 +467,16 @@ public class Grid extends JPanel implements KeyListener, Runnable, NewStartgameE
    * Ook kijkt het na of het spel niet gedaan is, indien dit het geval is geeft het de behaalde score weer.
    */
   private void UpdateGrid() {
-    boolean gameover = false;
-
     if (collision == true) {
+      // Test voor game over
       score += 5;
-      if (score > levelScore + 200) {
-        levelScore = score;
+      if (score > ScoreForNextLevel + 200) {
+        ScoreForNextLevel = score;
         level += 1;
         speed = speed * 70 / 100;
       }
-      this.fireNewScoreEvent(new NewScoreEvent(this));
       CheckLines();
+      this.fireNewScoreEvent(new NewScoreEvent(this));
       // Random blok / klasse
       CurrentBlock = NextBlock;
       CurrentBlock.setPosition(defaultBlockX, defaultBlockY);
@@ -493,41 +484,42 @@ public class Grid extends JPanel implements KeyListener, Runnable, NewStartgameE
       NextBlock.setPosition(0, -10000);
       blokken.add(CurrentBlock);
       System.out.println("Nieuwe blok toegevoegd aan arraylist, grootte is nu: " + blokken.size());
+      this.fireNewBlockEvent(new NewBlockEvent(this));
+      collision = false;
+      this.repaint();
+
+      CheckGameover();
 
       // Dispatch event for new block
-      this.fireNewBlockEvent(new NewBlockEvent(this));
 
+    }
+  }
 
+  private void CheckGameover() {
+    if (blokken.size() > 1) {
+      for (int u = 1; u <= 4; u++) {
+        for (int i = 1; i <= 4; i++) {
+          System.out.println("coordinaten van vorige blok zijn: " + blokken.get(blokken.size() - 2).getX(i)
+                  + "," + blokken.get(blokken.size() - 2).getY(i));
+          System.out.println("coordinaten van nieuwe blok zijn: " + CurrentBlock.getX(u)
+                  + "," + CurrentBlock.getY(u));
 
-      // Test voor game over
-      if (blokken.size() > 1) {
-        for (int u = 1; u <= 4; u++) {
-          if (blokken.get(blokken.size() - 2).getY(u) < 30) {
+          if (CurrentBlock.getY(u) == blokken.get(blokken.size() - 2).getY(i)
+                  && CurrentBlock.getX(u) == blokken.get(blokken.size() - 2).getX(i)) {
             pleaseWait = true;
             gameover = true;
-
           }
         }
       }
-      if (gameover == true) {
-        System.out.println("                                            GAME OVER");
-        System.out.println("---------------------------------------------------------------------------------------------------------------------");
-        JOptionPane.showConfirmDialog(null, "Congratulations, you cleared " + lines + " lines,\n got a score of " + score + " \nand made it to level " + level + "!", "Congratulations !", JOptionPane.PLAIN_MESSAGE);
-        JOptionPane pane = new JOptionPane("You got a new highscore! Do you want to save it?");
-        Object[] options = new String[]{"Yes", "No"};
-        pane.setOptions(options);
-        JDialog dialog = pane.createDialog(new JFrame(), "Dialog");
-        dialog.setVisible(true);
-        Object obj = pane.getValue();
-        int result = -1;
-        for (int k = 0; k < options.length; k++) {
-          if (options[k].equals(obj)) {
-            result = k;
-          }
-        }
-        System.out.println("User's choice: " + result);
+    }
+    if (gameover == true) {
+      JOptionPane.showConfirmDialog(null, "Congratulations, you cleared " + lines + " lines,\ngot a score of " + score
+              + " \nand made it to level " + level + "!", "Congratulations !", JOptionPane.PLAIN_MESSAGE);
+      if (highscore.CompareScores(highscore.MakeElement("test", score, level, lines)) == true) {
+        highscore.SaveHighscore(score, level, lines);
       }
-      collision = false;
+      this.fireNewGameoverEvent(new NewGameoverEvent(this));
+      System.out.println("in grid is gameover " + gameover);
     }
   }
 
@@ -590,8 +582,6 @@ public class Grid extends JPanel implements KeyListener, Runnable, NewStartgameE
       System.exit(0);
       return null;
     }
-
-
   }
 
   public void addNewScoreEventListener(NewScoreEventListener listener) {
@@ -624,10 +614,26 @@ public class Grid extends JPanel implements KeyListener, Runnable, NewStartgameE
     }
   }
 
+  public void addNewGameoverEventListener(NewGameoverEventListener listener) {
+    listenerList.add(NewGameoverEventListener.class, listener);
+  }
+
+  public final void fireNewGameoverEvent(NewGameoverEvent evt) {
+    Object[] listeners = listenerList.getListenerList();
+    int listenerCount = listeners.length;
+
+    for (int i = 0; i < listenerCount; i += 2) {
+      if (listeners[i] == NewGameoverEventListener.class) {
+        ((NewGameoverEventListener) listeners[i + 1]).newGameoverEventOccurred(evt);
+      }
+    }
+  }
+
   @Override
   public void newStartgameEventOccurred(NewStartgameEvent e) {
-    System.out.println("startgame is ingedrukt en startgame == true");
     if (startgame == false) {
+      gameover = false;
+      this.fireNewGameoverEvent(new NewGameoverEvent(this));
       speed = 500;
       NextBlock = this.getRandomBlock();
       NextBlock.setPosition(0, -10000);
@@ -639,14 +645,12 @@ public class Grid extends JPanel implements KeyListener, Runnable, NewStartgameE
       synchronized (this) {
         this.notifyAll();
       }
-      System.out.println("spel is gestart");
       startgame = true;
     } else if (startgame == true) {
-      System.out.println("stopgame is ingedrukt---------------------------------------------------------------------------------------------");
       blokken.clear();
-      level = score = lines = 0;
+      level = score = lines = ScoreForNextLevel = 0;
       this.fireNewScoreEvent(new NewScoreEvent(this));
-      repaint();
+      this.repaint();
       startgame = false;
       pleaseWait = true;
     }
@@ -654,17 +658,21 @@ public class Grid extends JPanel implements KeyListener, Runnable, NewStartgameE
 
   @Override
   public void newPausegameEventOccurred(NewPausegameEvent e) {
-    if (startgame == true) {
+    if (startgame == true && gameover == false) {
       if (pleaseWait == false) {
         pleaseWait = true;
-        System.out.println("Pause game pressed" + "pleaseWait = " + pleaseWait);
       } else if (pleaseWait == true) {
         pleaseWait = false;
         synchronized (this) {
           this.notifyAll();
         }
-        System.out.println("Resume game pressed" + "pleaseWait = " + pleaseWait);
       }
     }
+  }
+
+  @Override
+  public void newHighscoreEventOccurred(NewHighscoreEvent e) {
+    System.out.println("highscore is pressed!!");
+    highscore.viewHighscores();
   }
 }

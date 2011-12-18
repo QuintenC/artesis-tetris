@@ -6,7 +6,7 @@ import tetris.events.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class Sidebar extends JPanel implements NewBlockEventListener, NewScoreEventListener {
+public class Sidebar extends JPanel implements NewBlockEventListener, NewScoreEventListener, NewGameoverEventListener {
 
   protected JPanel sidePanel;
   protected JLabel blockLabel;
@@ -17,6 +17,7 @@ public class Sidebar extends JPanel implements NewBlockEventListener, NewScoreEv
   protected int score;
   protected int level;
   protected boolean gamestarted;
+  protected boolean gameover = false;
 
   public Sidebar() {
     sidePanel = new JPanel();
@@ -110,7 +111,8 @@ public class Sidebar extends JPanel implements NewBlockEventListener, NewScoreEv
                 this.fireNewPausegameEvent(new NewPausegameEvent(this));
                  
                 String text = (String) e.getActionCommand();
-                if (gamestarted == true) {
+                if (gamestarted == true && gameover == false) {
+                  System.out.println("gameover is " + gameover);
                   if (text.equals("Pause Game")) {
                     pauseButton.setText("Resume Game");
                   } else {
@@ -126,6 +128,26 @@ public class Sidebar extends JPanel implements NewBlockEventListener, NewScoreEv
                 for (int i = 0; i < listenerCount; i += 2) {
                   if (listeners[i] == NewPausegameEventListener.class) {
                     ((NewPausegameEventListener) listeners[i + 1]).newPausegameEventOccurred(evt);
+                  }
+                }
+              }
+            });
+
+         highscores.addActionListener(
+            new ActionListener() {
+
+              @Override
+              public void actionPerformed(ActionEvent e) {
+                this.fireNewHighscoreEvent(new NewHighscoreEvent(this));
+              }
+
+              private void fireNewHighscoreEvent(NewHighscoreEvent evt) {
+                Object[] listeners = listenerList.getListenerList();
+                int listenerCount = listeners.length;
+
+                for (int i = 0; i < listenerCount; i += 2) {
+                  if (listeners[i] == NewHighscoreEventListener.class) {
+                    ((NewHighscoreEventListener) listeners[i + 1]).newHighscoreEventOccurred(evt);
                   }
                 }
               }
@@ -184,11 +206,25 @@ public class Sidebar extends JPanel implements NewBlockEventListener, NewScoreEv
     this.setLevel(sourceGrid.getLevel());
   }
 
+  @Override
+  public void newGameoverEventOccurred(NewGameoverEvent e) {
+    Grid sourceGrid = (Grid) e.getSource();
+    gameover = sourceGrid.getGameover();
+  }
+
   public void addNewStartgameEventListener(NewStartgameEventListener listener) {
     listenerList.add(NewStartgameEventListener.class, listener);
   }
 
   public void addNewPausegameEventListener(NewPausegameEventListener listener) {
     listenerList.add(NewPausegameEventListener.class, listener);
+  }
+
+  public void addNewHighscoreEventListener(NewHighscoreEventListener listener) {
+    listenerList.add(NewHighscoreEventListener.class, listener);
+  }
+
+  public void addNewGameoverEventListener(NewGameoverEventListener listener) {
+    listenerList.add(NewGameoverEventListener.class, listener);
   }
 }

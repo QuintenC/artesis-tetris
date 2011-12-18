@@ -45,8 +45,11 @@ public class TetrisUI {
     
     tetrisSidebar.addNewStartgameEventListener(tetrisGrid);
     tetrisSidebar.addNewPausegameEventListener(tetrisGrid);
+    tetrisSidebar.addNewHighscoreEventListener(tetrisGrid);
+//    tetrisMenu.addNewHighscoreEventListener(tetrisGrid);
     
     tetrisGrid.addNewScoreEventListener(tetrisSidebar);
+    tetrisGrid.addNewGameoverEventListener(tetrisSidebar);
     
 
     gameUI.addKeyListener(tetrisGrid);
